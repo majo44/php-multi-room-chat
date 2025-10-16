@@ -1,0 +1,35 @@
+{
+    "name": "php-chat/multi-room-chat",
+    "description": "A multi-room web chat application built with PHP and WebSockets",
+    "type": "project",
+    "keywords": ["php", "chat", "websockets", "real-time", "multi-room"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chat Developer"
+        }
+    ],
+    "require": {
+        "php": ">=8.0",
+        "cboden/ratchet": "^0.4",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chat\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Chat\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "scripts": {
+        "start": "php -S localhost:8000 -t public",
+        "websocket": "php bin/websocket-server.php"
+    }
+}

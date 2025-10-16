@@ -1,0 +1,7 @@
+/vendor/
+/storage/*.db
+.env
+.DS_Store
+*.log
+.vscode/
+composer.phar
