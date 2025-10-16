@@ -47,5 +47,18 @@
     "english": "English",
     "switchedTo": "Switched to English",
     "switchedToPl": "Przełączono na język polski"
+  },
+  "emoji": {
+    "toggle": "Add emoji",
+    "categories": {
+      "smileys": "Smileys",
+      "people": "People",
+      "animals": "Animals",
+      "food": "Food",
+      "activities": "Activities",
+      "travel": "Travel",
+      "objects": "Objects",
+      "symbols": "Symbols"
+    }
   }
 }

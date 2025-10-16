@@ -47,5 +47,18 @@
     "english": "English",
     "switchedTo": "Przełączono na język polski",
     "switchedToEn": "Switched to English"
+  },
+  "emoji": {
+    "toggle": "Dodaj emoji",
+    "categories": {
+      "smileys": "Uśmiechy",
+      "people": "Ludzie",
+      "animals": "Zwierzęta",
+      "food": "Jedzenie",
+      "activities": "Aktywności",
+      "travel": "Podróże",
+      "objects": "Obiekty",
+      "symbols": "Symbole"
+    }
   }
 }

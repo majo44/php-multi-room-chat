@@ -62,8 +62,26 @@
                         </div>
                         
                         <div id="message-input-container" class="message-input-container" style="display: none;">
-                            <input type="text" id="message-input" placeholder="Wpisz wiadomość..." maxlength="1000">
-                            <button id="send-btn">Wyślij</button>
+                            <div class="input-row">
+                                <input type="text" id="message-input" placeholder="Wpisz wiadomość..." maxlength="1000">
+                                <button id="emoji-btn" class="emoji-btn" title="Dodaj emoji">😊</button>
+                                <button id="send-btn">Wyślij</button>
+                            </div>
+                            <div id="emoji-picker" class="emoji-picker" style="display: none;">
+                                <div class="emoji-categories">
+                                    <button class="emoji-category active" data-category="smileys">😊</button>
+                                    <button class="emoji-category" data-category="people">👋</button>
+                                    <button class="emoji-category" data-category="animals">🐱</button>
+                                    <button class="emoji-category" data-category="food">🍕</button>
+                                    <button class="emoji-category" data-category="activities">⚽</button>
+                                    <button class="emoji-category" data-category="travel">✈️</button>
+                                    <button class="emoji-category" data-category="objects">💡</button>
+                                    <button class="emoji-category" data-category="symbols">❤️</button>
+                                </div>
+                                <div class="emoji-grid" id="emoji-grid">
+                                    <!-- Emoji will be populated by JavaScript -->
+                                </div>
+                            </div>
                         </div>
                     </main>
                 </div>
