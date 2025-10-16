@@ -4,10 +4,54 @@
     box-sizing: border-box;
 }
 
+:root {
+    /* Light theme (default) */
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-chat: #ffffff;
+    --bg-sidebar: #f8f9fa;
+    --bg-header: #667eea;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-header: #ffffff;
+    --border-color: #e1e5e9;
+    --border-input: #e1e5e9;
+    --shadow: rgba(0,0,0,0.1);
+    --shadow-dark: rgba(0,0,0,0.2);
+    --button-bg: #667eea;
+    --button-hover: #5a6fd8;
+    --message-bg: #f8f9fa;
+    --message-own: #e3f2fd;
+}
+
+[data-theme="dark"] {
+    /* Dark theme */
+    --bg-gradient: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    --bg-primary: #1a202c;
+    --bg-secondary: #2d3748;
+    --bg-chat: #1a202c;
+    --bg-sidebar: #2d3748;
+    --bg-header: #2d3748;
+    --text-primary: #e2e8f0;
+    --text-secondary: #a0aec0;
+    --text-header: #ffffff;
+    --border-color: #4a5568;
+    --border-input: #4a5568;
+    --shadow: rgba(0,0,0,0.3);
+    --shadow-dark: rgba(0,0,0,0.5);
+    --button-bg: #4299e1;
+    --button-hover: #3182ce;
+    --message-bg: #2d3748;
+    --message-own: #2a4365;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: var(--bg-gradient);
     min-height: 100vh;
+    color: var(--text-primary);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .screen {
@@ -26,16 +70,16 @@ body {
 }
 
 .login-container {
-    background: white;
+    background: var(--bg-primary);
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px var(--shadow-dark);
     text-align: center;
     min-width: 350px;
 }
 
 .login-container h1 {
-    color: #333;
+    color: var(--text-primary);
     margin-bottom: 2rem;
     font-size: 2rem;
 }
@@ -48,19 +92,21 @@ body {
 
 #username-input {
     padding: 12px;
-    border: 2px solid #e1e5e9;
+    border: 2px solid var(--border-input);
     border-radius: 6px;
     font-size: 16px;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     transition: border-color 0.3s;
 }
 
 #username-input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: var(--button-bg);
 }
 
 #login-btn {
-    background: #667eea;
+    background: var(--button-bg);
     color: white;
     border: none;
     padding: 12px;
@@ -71,7 +117,7 @@ body {
 }
 
 #login-btn:hover {
-    background: #5a6fd8;
+    background: var(--button-hover);
 }
 
 #login-btn:disabled {
@@ -90,8 +136,8 @@ body {
     height: 100vh;
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
-    box-shadow: 0 0 30px rgba(0,0,0,0.1);
+    background: var(--bg-chat);
+    box-shadow: 0 0 30px var(--shadow);
 }
 
 /* Header */
@@ -100,9 +146,9 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background: #667eea;
-    color: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background: var(--bg-header);
+    color: var(--text-header);
+    box-shadow: 0 2px 10px var(--shadow);
 }
 
 .header-left h2 {
@@ -161,6 +207,26 @@ body {
     opacity: 0.6;
 }
 
+.theme-toggle {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+}
+
+.theme-toggle:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
 /* Chat Body */
 .chat-body {
     display: flex;
@@ -171,8 +237,8 @@ body {
 /* Sidebar */
 .sidebar {
     width: 300px;
-    background: #f8fafc;
-    border-right: 1px solid #e1e5e9;
+    background: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
 }
@@ -182,16 +248,16 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem;
-    border-bottom: 1px solid #e1e5e9;
-    background: white;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-primary);
 }
 
 .sidebar-header h3 {
-    color: #374151;
+    color: var(--text-primary);
 }
 
 #create-room-btn {
-    background: #667eea;
+    background: var(--button-bg);
     color: white;
     border: none;
     width: 30px;

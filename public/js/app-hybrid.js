@@ -13,6 +13,7 @@ class ChatApp {
         this.initElements();
         this.bindEvents();
         this.initServiceWorker();
+        this.initTheme();
         this.showLoginScreen();
     }
 
@@ -29,6 +30,7 @@ class ChatApp {
         this.currentRoomName = document.getElementById('current-room-name');
         this.currentUsername = document.getElementById('current-username');
         this.connectionStatus = document.getElementById('connection-status');
+        this.themeToggle = document.getElementById('theme-toggle');
         this.logoutBtn = document.getElementById('logout-btn');
         this.roomsList = document.getElementById('rooms-list');
         this.messagesContainer = document.getElementById('messages-container');
@@ -75,6 +77,9 @@ class ChatApp {
                 this.hideCreateRoomModal();
             }
         });
+        
+        // Theme toggle
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
     }
 
     generateSessionId() {
@@ -437,6 +442,28 @@ class ChatApp {
         this.createRoomModal.classList.remove('active');
     }
 
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('chatTheme', newTheme);
+        
+        // Update theme toggle icon
+        this.themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
+        this.themeToggle.title = newTheme === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw';
+    }
+
+    initTheme() {
+        // Load saved theme or default to light
+        const savedTheme = localStorage.getItem('chatTheme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Update theme toggle icon
+        this.themeToggle.innerHTML = savedTheme === 'dark' ? '☀️' : '🌙';
+        this.themeToggle.title = savedTheme === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw';
+    }
+
     async createRoom() {
         const roomName = this.roomNameInput.value.trim();
         if (!roomName) {
@@ -665,5 +692,5 @@ class ChatApp {
 
 // Initialize app when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new ChatApp();
+    window.chatApp = new ChatApp();
 });
