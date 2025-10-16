@@ -59,6 +59,32 @@ composer run start
 2. Select or create a chat room
 3. Start chatting in real-time!
 
+## Deployment
+
+### Railway.app (Recommended)
+1. Fork this repository
+2. Connect your GitHub account to [Railway.app](https://railway.app)
+3. Create new project from GitHub repository
+4. Deploy automatically
+
+### Heroku
+1. Install Heroku CLI
+2. Login: `heroku login`
+3. Create app: `heroku create your-chat-app-name`
+4. Deploy: `git push heroku master`
+
+### Render.com
+1. Connect GitHub repository to [Render.com](https://render.com)
+2. Create new Web Service
+3. Use render.yaml configuration
+
+### Manual VPS Deployment
+1. Upload files to web server
+2. Install PHP 8.0+ and Composer
+3. Run: `composer install --no-dev`
+4. Set web root to `public/` directory
+5. Configure WebSocket server as background service
+
 ## Development
 
 - `src/` - Application source code
@@ -73,6 +99,13 @@ composer run start
 - XSS protection
 - Rate limiting
 - Session management
+
+## Environment Variables
+
+- `WEBSOCKET_HOST` - WebSocket server host (default: 127.0.0.1)
+- `WEBSOCKET_PORT` - WebSocket server port (default: 8081)
+- `APP_DEBUG` - Debug mode (default: false)
+- `APP_URL` - Application URL
 
 ## License
 

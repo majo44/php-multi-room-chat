@@ -118,7 +118,14 @@ class ChatApp {
 
     connectWebSocket(username) {
         try {
-            this.ws = new WebSocket('ws://localhost:8081');
+            // Auto-detect WebSocket URL based on current location
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const host = window.location.hostname;
+            const port = window.location.hostname === 'localhost' ? ':8081' : ':' + (window.location.port || (protocol === 'wss:' ? '443' : '80'));
+            const wsUrl = `${protocol}//${host}${port}`;
+            
+            console.log('Connecting to WebSocket:', wsUrl);
+            this.ws = new WebSocket(wsUrl);
             
             this.ws.onopen = () => {
                 console.log('WebSocket połączony');

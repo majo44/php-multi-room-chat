@@ -9,8 +9,8 @@ return [
     ],
     
     'websocket' => [
-        'host' => '127.0.0.1',
-        'port' => 8081,
+        'host' => $_ENV['WEBSOCKET_HOST'] ?? '127.0.0.1',
+        'port' => $_ENV['WEBSOCKET_PORT'] ?? 8081,
     ],
     
     'security' => [
@@ -21,7 +21,8 @@ return [
     
     'app' => [
         'name' => 'PHP Multi-Room Chat',
-        'debug' => true,
+        'debug' => $_ENV['APP_DEBUG'] ?? false,
         'timezone' => 'UTC',
+        'url' => $_ENV['APP_URL'] ?? 'http://localhost:8000',
     ]
 ];

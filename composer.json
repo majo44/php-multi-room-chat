@@ -31,6 +31,10 @@
     },
     "scripts": {
         "start": "php -S localhost:8000 -t public",
-        "websocket": "php bin/websocket-server.php"
+        "websocket": "php bin/websocket-server.php",
+        "setup": "php bin/setup-database.php",
+        "post-install-cmd": [
+            "php bin/setup-database.php"
+        ]
     }
 }
