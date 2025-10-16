@@ -44,6 +44,8 @@
   "language": {
     "toggle": "Switch language",
     "polish": "Polski",
-    "english": "English"
+    "english": "English",
+    "switchedTo": "Switched to English",
+    "switchedToPl": "Przełączono na język polski"
   }
 }

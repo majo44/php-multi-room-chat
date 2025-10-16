@@ -220,6 +220,16 @@ body {
     align-items: center;
     justify-content: center;
     min-width: 40px;
+    gap: 4px;
+}
+
+.language-toggle .lang-flag {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.language-toggle .lang-icon {
+    font-size: 1rem;
 }
 
 .theme-toggle:hover, .language-toggle:hover {

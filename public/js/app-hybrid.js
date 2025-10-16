@@ -521,11 +521,22 @@ class ChatApp {
         this.loadTranslations().then(() => {
             this.updateLanguageToggle();
             this.updateAllTexts();
+            
+            // Pokaż powiadomienie o zmianie języka - najpierw krótko, potem alert
+            setTimeout(() => {
+                const message = this.currentLanguage === 'pl' ? 
+                    this.t('language.switchedTo') : 
+                    this.t('language.switchedTo');
+                alert(message);
+            }, 100);
         });
     }
 
     updateLanguageToggle() {
-        this.languageToggle.innerHTML = this.currentLanguage === 'pl' ? '🇺🇸' : '🇵🇱';
+        const flagElement = document.getElementById('lang-flag');
+        if (flagElement) {
+            flagElement.textContent = this.currentLanguage === 'pl' ? '🇺🇸' : '🇵🇱';
+        }
         this.languageToggle.title = this.t('language.toggle');
     }
 
