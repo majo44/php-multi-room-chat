@@ -1,12 +1,13 @@
 {
-    "name": "php-chat/multi-room-chat",
+    "name": "majo44/php-multi-room-chat",
     "description": "A multi-room web chat application built with PHP and WebSockets",
     "type": "project",
     "keywords": ["php", "chat", "websockets", "real-time", "multi-room"],
     "license": "MIT",
+    "homepage": "https://github.com/majo44/php-multi-room-chat",
     "authors": [
         {
-            "name": "Chat Developer"
+            "name": "majo44"
         }
     ],
     "require": {

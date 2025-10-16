@@ -21,27 +21,32 @@ A real-time multi-room chat application built with PHP, WebSockets, and modern w
 ## Installation
 
 1. Clone the repository:
+
 ```bash
-git clone <repository-url>
-cd php-chat
+git clone https://github.com/majo44/php-multi-room-chat.git
+cd php-multi-room-chat
 ```
 
 2. Install dependencies:
+
 ```bash
 composer install
 ```
 
 3. Set up the database:
+
 ```bash
 php bin/setup-database.php
 ```
 
 4. Start the WebSocket server:
+
 ```bash
 composer run websocket
 ```
 
 5. Start the web server:
+
 ```bash
 composer run start
 ```
