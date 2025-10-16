@@ -77,8 +77,19 @@ class Database
                 FOREIGN KEY (room_id) REFERENCES rooms(id),
                 FOREIGN KEY (user_id) REFERENCES users(id)
             )",
+            "CREATE TABLE IF NOT EXISTS push_subscriptions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                endpoint TEXT NOT NULL,
+                p256dh_key TEXT NOT NULL,
+                auth_key TEXT NOT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(id),
+                UNIQUE(user_id, endpoint)
+            )",
             "CREATE INDEX IF NOT EXISTS idx_messages_room_created ON messages(room_id, created_at)",
-            "CREATE INDEX IF NOT EXISTS idx_users_session ON users(session_id)"
+            "CREATE INDEX IF NOT EXISTS idx_users_session ON users(session_id)",
+            "CREATE INDEX IF NOT EXISTS idx_push_subscriptions_user ON push_subscriptions(user_id)"
         ];
 
         foreach ($queries as $query) {

@@ -7,9 +7,12 @@ class ChatApp {
         this.pollingInterval = null;
         this.lastMessageTime = null;
         this.useWebSocket = true; // Try WebSocket first, fallback to polling
+        this.pushNotificationsEnabled = false;
+        this.vapidPublicKey = null;
         
         this.initElements();
         this.bindEvents();
+        this.initServiceWorker();
         this.showLoginScreen();
     }
 
@@ -119,6 +122,7 @@ class ChatApp {
             if (data.success) {
                 this.currentUser = {
                     id: data.user_id,
+                    user_id: data.user_id, // Add both for compatibility
                     username: data.username
                 };
                 
@@ -126,6 +130,9 @@ class ChatApp {
                 this.showChatScreen();
                 this.updateConnectionStatus(true, 'API');
                 this.requestRoomsList();
+                
+                // Initialize push notifications
+                this.updatePushButtonState();
                 
                 // Try WebSocket connection
                 this.tryWebSocketConnection();
@@ -477,6 +484,176 @@ class ChatApp {
         this.currentRoom = null;
         this.usernameInput.value = '';
         this.showLoginScreen();
+    }
+
+    async initServiceWorker() {
+        if ('serviceWorker' in navigator && 'PushManager' in window) {
+            try {
+                console.log('Registering Service Worker...');
+                const registration = await navigator.serviceWorker.register('/sw.js');
+                console.log('Service Worker registered:', registration);
+                
+                // Get VAPID public key from server
+                await this.getVapidPublicKey();
+                
+                // Check if notifications are already granted
+                if (Notification.permission === 'granted') {
+                    this.pushNotificationsEnabled = true;
+                }
+                
+            } catch (error) {
+                console.error('Service Worker registration failed:', error);
+            }
+        } else {
+            console.log('Push messaging is not supported');
+        }
+    }
+
+    async getVapidPublicKey() {
+        try {
+            const response = await fetch('/api.php?action=get_vapid_key');
+            const data = await response.json();
+            if (data.success) {
+                this.vapidPublicKey = data.vapid_public_key;
+                console.log('VAPID public key loaded');
+            }
+        } catch (error) {
+            console.error('Failed to get VAPID key:', error);
+        }
+    }
+
+    async requestPushPermission() {
+        if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+            console.log('Push messaging is not supported');
+            return false;
+        }
+
+        try {
+            const permission = await Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                console.log('Notification permission granted');
+                await this.subscribeToPush();
+                this.pushNotificationsEnabled = true;
+                this.updatePushButtonState();
+                return true;
+            } else {
+                console.log('Notification permission denied');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error requesting push permission:', error);
+            return false;
+        }
+    }
+
+    async subscribeToPush() {
+        if (!this.vapidPublicKey || !this.currentUser) {
+            console.log('Cannot subscribe: missing VAPID key or user');
+            return;
+        }
+
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            
+            const subscription = await registration.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: this.urlBase64ToUint8Array(this.vapidPublicKey)
+            });
+
+            console.log('Push subscription created:', subscription);
+
+            // Send subscription to server
+            const response = await fetch('/api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'subscribe_push',
+                    user_id: this.currentUser.user_id,
+                    subscription: JSON.stringify(subscription)
+                })
+            });
+
+            const data = await response.json();
+            if (data.success) {
+                console.log('Push subscription saved to server');
+            } else {
+                console.error('Failed to save subscription:', data.error);
+            }
+
+        } catch (error) {
+            console.error('Error subscribing to push:', error);
+        }
+    }
+
+    async unsubscribeFromPush() {
+        try {
+            const registration = await navigator.serviceWorker.ready;
+            const subscription = await registration.pushManager.getSubscription();
+            
+            if (subscription) {
+                await subscription.unsubscribe();
+                console.log('Unsubscribed from push notifications');
+
+                // Remove from server
+                if (this.currentUser) {
+                    const response = await fetch('/api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: new URLSearchParams({
+                            action: 'unsubscribe_push',
+                            user_id: this.currentUser.user_id,
+                            endpoint: subscription.endpoint
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.success) {
+                        console.log('Push subscription removed from server');
+                    }
+                }
+            }
+
+            this.pushNotificationsEnabled = false;
+            this.updatePushButtonState();
+
+        } catch (error) {
+            console.error('Error unsubscribing from push:', error);
+        }
+    }
+
+    urlBase64ToUint8Array(base64String) {
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const base64 = (base64String + padding)
+            .replace(/\-/g, '+')
+            .replace(/_/g, '/');
+
+        const rawData = window.atob(base64);
+        const outputArray = new Uint8Array(rawData.length);
+
+        for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+        }
+        return outputArray;
+    }
+
+    updatePushButtonState() {
+        // Add push notification toggle button to UI if it exists
+        const pushToggle = document.getElementById('push-toggle');
+        if (pushToggle) {
+            pushToggle.textContent = this.pushNotificationsEnabled ? 'Wyłącz powiadomienia' : 'Włącz powiadomienia';
+            pushToggle.onclick = () => {
+                if (this.pushNotificationsEnabled) {
+                    this.unsubscribeFromPush();
+                } else {
+                    this.requestPushPermission();
+                }
+            };
+        }
     }
 
     escapeHtml(text) {
