@@ -10,10 +10,15 @@ class ChatApp {
         this.pushNotificationsEnabled = false;
         this.vapidPublicKey = null;
         
+        // Internationalization
+        this.currentLanguage = 'pl';
+        this.translations = {};
+        
         this.initElements();
         this.bindEvents();
         this.initServiceWorker();
         this.initTheme();
+        this.initLanguage();
         this.showLoginScreen();
     }
 
@@ -30,6 +35,7 @@ class ChatApp {
         this.currentRoomName = document.getElementById('current-room-name');
         this.currentUsername = document.getElementById('current-username');
         this.connectionStatus = document.getElementById('connection-status');
+        this.languageToggle = document.getElementById('language-toggle');
         this.themeToggle = document.getElementById('theme-toggle');
         this.logoutBtn = document.getElementById('logout-btn');
         this.roomsList = document.getElementById('rooms-list');
@@ -78,6 +84,9 @@ class ChatApp {
             }
         });
         
+        // Language toggle
+        this.languageToggle.addEventListener('click', () => this.toggleLanguage());
+        
         // Theme toggle
         this.themeToggle.addEventListener('click', () => this.toggleTheme());
     }
@@ -95,17 +104,18 @@ class ChatApp {
     showChatScreen() {
         this.loginScreen.classList.remove('active');
         this.chatScreen.classList.add('active');
+        this.updateChatTexts();
     }
 
     async login() {
         const username = this.usernameInput.value.trim();
         if (!username) {
-            alert('Proszę wprowadzić nazwę użytkownika');
+            alert(this.t('login.error') + ': ' + this.t('login.placeholder'));
             return;
         }
         
         if (username.length > 50) {
-            alert('Nazwa użytkownika jest zbyt długa (max 50 znaków)');
+            alert(this.t('login.error') + ': Nazwa użytkownika jest zbyt długa (max 50 znaków)');
             return;
         }
 
@@ -146,11 +156,11 @@ class ChatApp {
             }
         } catch (error) {
             console.error('Login error:', error);
-            alert('Błąd logowania: ' + error.message);
+            alert(this.t('login.error') + ': ' + error.message);
         }
         
         this.loginBtn.disabled = false;
-        this.loginBtn.textContent = 'Dołącz do czatu';
+        this.loginBtn.textContent = this.t('login.button');
     }
 
     tryWebSocketConnection() {
@@ -418,10 +428,18 @@ class ChatApp {
 
     updateConnectionStatus(connected, mode = '') {
         if (connected) {
-            this.connectionStatus.textContent = `Połączony (${mode})`;
+            let statusText;
+            if (mode === 'WebSocket') {
+                statusText = this.t('chat.connectedWebsocket');
+            } else if (mode === 'Polling' || mode === 'API') {
+                statusText = this.t('chat.connectedPolling');
+            } else {
+                statusText = `${this.t('chat.connectedPolling')} (${mode})`;
+            }
+            this.connectionStatus.textContent = statusText;
             this.connectionStatus.className = 'status-connected';
         } else {
-            this.connectionStatus.textContent = 'Rozłączony';
+            this.connectionStatus.textContent = this.t('chat.disconnected');
             this.connectionStatus.className = 'status-disconnected';
         }
     }
@@ -451,7 +469,7 @@ class ChatApp {
         
         // Update theme toggle icon
         this.themeToggle.innerHTML = newTheme === 'dark' ? '☀️' : '🌙';
-        this.themeToggle.title = newTheme === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw';
+        this.updateThemeToggleTitle();
     }
 
     initTheme() {
@@ -461,18 +479,154 @@ class ChatApp {
         
         // Update theme toggle icon
         this.themeToggle.innerHTML = savedTheme === 'dark' ? '☀️' : '🌙';
-        this.themeToggle.title = savedTheme === 'dark' ? 'Przełącz na jasny motyw' : 'Przełącz na ciemny motyw';
+        this.updateThemeToggleTitle();
+    }
+
+    async initLanguage() {
+        // Load saved language or default to Polish
+        this.currentLanguage = localStorage.getItem('chatLanguage') || 'pl';
+        
+        try {
+            // Load translation files
+            await this.loadTranslations();
+            
+            // Update UI with translations
+            this.updateLanguageToggle();
+            this.updateAllTexts();
+        } catch (error) {
+            console.error('Failed to load translations:', error);
+        }
+    }
+
+    async loadTranslations() {
+        try {
+            const response = await fetch(`i18n/${this.currentLanguage}.json`);
+            if (!response.ok) throw new Error(`Failed to load ${this.currentLanguage}.json`);
+            this.translations = await response.json();
+        } catch (error) {
+            console.error(`Error loading translations for ${this.currentLanguage}:`, error);
+            // Fallback to Polish if English fails
+            if (this.currentLanguage !== 'pl') {
+                this.currentLanguage = 'pl';
+                const response = await fetch('i18n/pl.json');
+                this.translations = await response.json();
+            }
+        }
+    }
+
+    toggleLanguage() {
+        this.currentLanguage = this.currentLanguage === 'pl' ? 'en' : 'pl';
+        localStorage.setItem('chatLanguage', this.currentLanguage);
+        
+        this.loadTranslations().then(() => {
+            this.updateLanguageToggle();
+            this.updateAllTexts();
+        });
+    }
+
+    updateLanguageToggle() {
+        this.languageToggle.innerHTML = this.currentLanguage === 'pl' ? '🇺🇸' : '🇵🇱';
+        this.languageToggle.title = this.t('language.toggle');
+    }
+
+    updateThemeToggleTitle() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        this.themeToggle.title = currentTheme === 'dark' ? this.t('theme.toggleLight') : this.t('theme.toggleDark');
+    }
+
+    t(key) {
+        const keys = key.split('.');
+        let value = this.translations;
+        
+        for (const k of keys) {
+            if (value && typeof value === 'object' && k in value) {
+                value = value[k];
+            } else {
+                return key; // Return key if translation not found
+            }
+        }
+        
+        return value;
+    }
+
+    updateAllTexts() {
+        // Update login screen
+        const loginTitle = document.querySelector('#login-screen h1');
+        if (loginTitle) loginTitle.textContent = this.t('login.title');
+        
+        this.usernameInput.placeholder = this.t('login.placeholder');
+        
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) loginBtn.textContent = this.t('login.button');
+        
+        // Update chat interface if visible
+        if (!this.loginScreen.classList.contains('active')) {
+            this.updateChatTexts();
+        }
+    }
+
+    updateChatTexts() {
+        // Update header
+        if (this.currentRoom) {
+            this.currentRoomName.textContent = this.currentRoom.name;
+        } else {
+            this.currentRoomName.textContent = this.t('chat.selectRoom');
+        }
+        
+        // Update connection status
+        this.updateConnectionStatus();
+        
+        // Update buttons
+        this.logoutBtn.textContent = this.t('chat.logout');
+        
+        const pushBtn = document.getElementById('push-toggle');
+        if (pushBtn) {
+            pushBtn.textContent = this.pushNotificationsEnabled ? 
+                this.t('notifications.disable') : this.t('notifications.enable');
+        }
+        
+        // Update sidebar
+        const roomsHeader = document.querySelector('.sidebar-header h3');
+        if (roomsHeader) roomsHeader.textContent = this.t('chat.rooms');
+        
+        // Update message input
+        if (this.messageInput) {
+            this.messageInput.placeholder = this.t('chat.messagePlaceholder');
+        }
+        
+        const sendBtn = document.getElementById('send-btn');
+        if (sendBtn) sendBtn.textContent = this.t('chat.send');
+        
+        // Update welcome message
+        const welcomeTitle = document.querySelector('#welcome-message h3');
+        const welcomeDesc = document.querySelector('#welcome-message p');
+        if (welcomeTitle) welcomeTitle.textContent = this.t('chat.welcome');
+        if (welcomeDesc) welcomeDesc.textContent = this.t('chat.welcomeDesc');
+        
+        // Update create room modal
+        const modalTitle = document.querySelector('#create-room-modal h3');
+        if (modalTitle) modalTitle.textContent = this.t('room.create');
+        
+        this.roomNameInput.placeholder = this.t('room.nameLabel');
+        
+        const createBtn = document.getElementById('create-room-confirm');
+        const cancelBtn = document.getElementById('create-room-cancel');
+        if (createBtn) createBtn.textContent = this.t('room.createButton');
+        if (cancelBtn) cancelBtn.textContent = this.t('room.cancel');
+        
+        // Update theme toggle title
+        this.updateThemeToggleTitle();
     }
 
     async createRoom() {
         const roomName = this.roomNameInput.value.trim();
         if (!roomName) {
-            alert('Proszę wprowadzić nazwę pokoju');
+            alert(this.t('room.nameRequired'));
             return;
         }
         
         if (roomName.length > 100) {
-            alert('Nazwa pokoju jest zbyt długa (max 100 znaków)');
+            alert(this.t('room.error') + ': Nazwa pokoju jest zbyt długa (max 100 znaków)');
             return;
         }
 
@@ -491,11 +645,11 @@ class ChatApp {
                 this.requestRoomsList();
                 this.joinRoom(data.room);
             } else {
-                alert('Błąd: ' + (data.error || 'Nie udało się utworzyć pokoju'));
+                alert(this.t('room.error') + ': ' + (data.error || this.t('room.error')));
             }
         } catch (error) {
             console.error('Error creating room:', error);
-            alert('Błąd podczas tworzenia pokoju');
+            alert(this.t('room.error'));
         }
     }
 

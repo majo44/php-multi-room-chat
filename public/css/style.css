@@ -207,7 +207,7 @@ body {
     opacity: 0.6;
 }
 
-.theme-toggle {
+.theme-toggle, .language-toggle {
     background: rgba(255,255,255,0.2);
     color: white;
     border: none;
@@ -222,7 +222,7 @@ body {
     min-width: 40px;
 }
 
-.theme-toggle:hover {
+.theme-toggle:hover, .language-toggle:hover {
     background: rgba(255,255,255,0.3);
     transform: scale(1.1);
 }

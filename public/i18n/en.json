@@ -1,0 +1,49 @@
+{
+  "login": {
+    "title": "🗨️ Multi-Room Chat",
+    "placeholder": "Enter your name...",
+    "button": "Join Chat",
+    "error": "Login error"
+  },
+  "chat": {
+    "selectRoom": "Select Room",
+    "connectedWebsocket": "Connected (WebSocket)",
+    "connectedPolling": "Connected (Polling)",
+    "disconnected": "Disconnected",
+    "reconnecting": "Reconnecting",
+    "rooms": "Rooms",
+    "welcome": "Welcome to Chat!",
+    "welcomeDesc": "Select a room from the left sidebar to start chatting.",
+    "messagePlaceholder": "Type a message...",
+    "send": "Send",
+    "logout": "Logout",
+    "activeUsers": "active users",
+    "activeUser": "active user",
+    "activeUsersMany": "active users"
+  },
+  "room": {
+    "create": "Create New Room",
+    "nameLabel": "Room name...",
+    "createButton": "Create",
+    "cancel": "Cancel",
+    "nameRequired": "Please enter room name",
+    "error": "Error creating room"
+  },
+  "notifications": {
+    "enable": "Enable Notifications",
+    "disable": "Disable Notifications",
+    "enabled": "Notifications enabled!",
+    "disabled": "Notifications disabled!",
+    "notSupported": "Notifications are not supported in this browser",
+    "permission": "Please grant permission for notifications"
+  },
+  "theme": {
+    "toggleLight": "Switch to light theme",
+    "toggleDark": "Switch to dark theme"
+  },
+  "language": {
+    "toggle": "Switch language",
+    "polish": "Polski",
+    "english": "English"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "login": {
+    "title": "🗨️ Multi-Room Chat",
+    "placeholder": "Wpisz swoją nazwę...",
+    "button": "Dołącz do czatu",
+    "error": "Błąd logowania"
+  },
+  "chat": {
+    "selectRoom": "Wybierz pokój",
+    "connectedWebsocket": "Połączony (WebSocket)",
+    "connectedPolling": "Połączony (Polling)",
+    "disconnected": "Rozłączony",
+    "reconnecting": "Ponowne łączenie",
+    "rooms": "Pokoje",
+    "welcome": "Witamy w czacie!",
+    "welcomeDesc": "Wybierz pokój z listy po lewej stronie, aby rozpocząć rozmowę.",
+    "messagePlaceholder": "Wpisz wiadomość...",
+    "send": "Wyślij",
+    "logout": "Wyloguj",
+    "activeUsers": "aktywnych użytkowników",
+    "activeUser": "aktywny użytkownik",
+    "activeUsersMany": "aktywnych użytkowników"
+  },
+  "room": {
+    "create": "Utwórz nowy pokój",
+    "nameLabel": "Nazwa pokoju...",
+    "createButton": "Utwórz",
+    "cancel": "Anuluj",
+    "nameRequired": "Proszę wprowadzić nazwę pokoju",
+    "error": "Błąd podczas tworzenia pokoju"
+  },
+  "notifications": {
+    "enable": "Włącz powiadomienia",
+    "disable": "Wyłącz powiadomienia",
+    "enabled": "Powiadomienia włączone!",
+    "disabled": "Powiadomienia wyłączone!",
+    "notSupported": "Powiadomienia nie są obsługiwane w tej przeglądarce",
+    "permission": "Proszę udzielić zgody na powiadomienia"
+  },
+  "theme": {
+    "toggleLight": "Przełącz na jasny motyw",
+    "toggleDark": "Przełącz na ciemny motyw"
+  },
+  "language": {
+    "toggle": "Przełącz język",
+    "polish": "Polski",
+    "english": "English"
+  }
+}
